@@ -63,7 +63,7 @@ $('#datepicker').datepicker({
 <?php 
 // Create the form.
 
-echo '<form action="add_bills.php" method="post">';
+echo '<form method="post">';
 $tenant_id = $row['tenant_id'];
 $month= $row['month'];
 $rent= $row['rent'];
@@ -85,7 +85,7 @@ echo ' <table border="0">
 <tr><td><p>Building</p></td><td><p>
 <select name="building_id" id="building_id" required>';
 $bresult = mysql_query("SELECT * FROM building_info WHERE status = 'ACTIVE'");
-echo mysql_num_rows($bresult);
+
 $tb = mysql_query("SELECT * FROM tenant WHERE id='".$row['tenant_id']."'");
 $rtb = mysql_fetch_array($tb);
 while($r = mysql_fetch_array($bresult))
@@ -95,17 +95,15 @@ if ($r['bldid']==$rtb["building_id"]) {
 } else {
 	 $selected = "";
 }
-echo '<option value="'.$row['bldid'].'" '.$selected.'>'.$row['name'].'</option>';
+echo '<option value="'.$r['bldid'].'" '.$selected.'>'.$r['name'].'</option>';
 }
 echo '</select></p></td></tr>
 <tr><td><p>Tenant</p></td><td><p>
 <select name="tenant_id" id="tenant_id" required>';
 $b = mysql_query("SELECT * FROM building_info WHERE status = 'ACTIVE' LIMIT 1");
 $building = mysql_fetch_array($b);
-$tresult = mysql_query("SELECT * FROM tenant WHERE status = 'ACTIVE'  AND building_id='".$building['bldid']."'");
+$tresult = mysql_query("SELECT * FROM tenant WHERE status = 'ACTIVE'  AND id='".$row['tenant_id']."'");
 
-$t = mysql_query("SELECT * FROM tenant WHERE status = 'ACTIVE' AND building_id='".$building['bldid']."' LIMIT 1");
-$tenant = mysql_fetch_array($t);
 while($t = mysql_fetch_array($tresult))
 {
 if ($t['id']==$row["tenant_id"]) {
@@ -113,10 +111,10 @@ if ($t['id']==$row["tenant_id"]) {
 } else {
 	 $selected = "";
 }
-echo '<option value="'.$row['id'].'" '.$selected.'>'.$row['r_name'].'</option>';
+echo '<option value="'.$t['id'].'" '.$selected.'>'.$t['r_name'].'</option>';
 }
 echo '</select></p></td></tr>
-<tr><td><p>Rent: </td><td><input type="text" required name="rent" id="rent" size="15" maxlength="15" value="'.$rent.'" class="textbox"/></p></td></tr>
+<tr><td><p>Rent: </td><td><input type="number" required name="rent" id="rent" size="15" maxlength="15" value="'.$rent.'" class="textbox"/></p></td></tr>
 <tr><td><p>Water Bill: </td><td><input type="text" required name="water_bill" size="50" maxlength="50" value="'.$water_bill.'" class="textbox"/></p></td></tr>
 <tr><td><p>Electricity Bill: </td><td><input type="text" name="electric_bill" size="50" maxlength="50" value="'.$electric_bill.'" class="textbox"/></p></td></tr>
 <tr><td><p>Gas Bill: </td><td><input type="text" name="gas_bill" size="50" maxlength="50" value="'.$gas_bill.'" class="textbox"/></p></td></tr>
