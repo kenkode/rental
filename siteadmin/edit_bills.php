@@ -20,6 +20,9 @@ if($existCount == 0){
 	echo "Your login session data is not on record in the database";
 	exit();
 		}
+		
+$result = mysql_query("SELECT * FROM billing where owner_utility_id='".$_REQUEST['id']."'");
+$row = mysql_fetch_array($result);
 ?>
 
 <?php 
@@ -33,7 +36,7 @@ ini_set('display_errors','1');
 <link rel="stylesheet" href="../css/bootstrap.css" type="text/css" media="screen"/>
 <link rel="stylesheet" href="../style/datapicker/css/bootstrap-datepicker.css" type="text/css" media="screen"/>
 <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
- <title>Add Bills</title>
+ <title>Edit Bills</title>
  <script src="../style/jquery-2.1.1.js"></script>
  <script src="../style/bootstrap.js"></script>
 <script src="../style/datepicker/js/bootstrap-datepicker.js"></script>
@@ -61,44 +64,56 @@ $('#datepicker').datepicker({
 // Create the form.
 
 echo '<form action="add_bills.php" method="post">';
-$tenant_id = "";
-$month= "";
-$rent= "";
-$water_bill= 500;
-$electric_bill= "";
-$gas_bill= "";
-$security_bill= 200;
-$utility_bill= "";
-$other_bill= "";
-$total_rent= "";
-$issue_date = "";
+$tenant_id = $row['tenant_id'];
+$month= $row['month'];
+$rent= $row['rent'];
+$water_bill= $row['water_bill'];
+$electric_bill= $row['electric_bill'];
+$gas_bill= $row['gas_bill'];
+$security_bill= $row['security_bill'];
+$utility_bill= $row['utility_bill'];
+$other_bill= $row['other_bill'];
+$total_rent= $row['total_rent'];
+$issue_date = $row['issue_date'];
 
 //Populate Value from Form Submit - Stickeness
 
 echo '<div class="container">';
-echo '<h2>Add Bill Details</h2>' ;   
+echo '<h2>Edit Bill Details</h2>' ;   
 
 echo ' <table border="0"> 
 <tr><td><p>Building</p></td><td><p>
 <select name="building_id" id="building_id" required>';
-$result = mysql_query("SELECT * FROM building_info WHERE status = 'ACTIVE'");
-while($row = mysql_fetch_array($result))
+$bresult = mysql_query("SELECT * FROM building_info WHERE status = 'ACTIVE'");
+echo mysql_num_rows($bresult);
+$tb = mysql_query("SELECT * FROM tenant WHERE id='".$row['tenant_id']."'");
+$rtb = mysql_fetch_array($tb);
+while($r = mysql_fetch_array($bresult))
 {
-echo '<option value="'.$row['bldid'].'">'.$row['name'].'</option>';
+if ($r['bldid']==$rtb["building_id"]) {
+	 $selected = "selected";
+} else {
+	 $selected = "";
+}
+echo '<option value="'.$row['bldid'].'" '.$selected.'>'.$row['name'].'</option>';
 }
 echo '</select></p></td></tr>
 <tr><td><p>Tenant</p></td><td><p>
 <select name="tenant_id" id="tenant_id" required>';
 $b = mysql_query("SELECT * FROM building_info WHERE status = 'ACTIVE' LIMIT 1");
 $building = mysql_fetch_array($b);
-$result = mysql_query("SELECT * FROM tenant WHERE status = 'ACTIVE'  AND building_id='".$building['bldid']."'");
+$tresult = mysql_query("SELECT * FROM tenant WHERE status = 'ACTIVE'  AND building_id='".$building['bldid']."'");
 
 $t = mysql_query("SELECT * FROM tenant WHERE status = 'ACTIVE' AND building_id='".$building['bldid']."' LIMIT 1");
 $tenant = mysql_fetch_array($t);
-$rent = $tenant['r_rent_pm'];
-while($row = mysql_fetch_array($result))
+while($t = mysql_fetch_array($tresult))
 {
-echo '<option value="'.$row['id'].'">'.$row['r_name'].'</option>';
+if ($t['id']==$row["tenant_id"]) {
+	 $selected = "selected";
+} else {
+	 $selected = "";
+}
+echo '<option value="'.$row['id'].'" '.$selected.'>'.$row['r_name'].'</option>';
 }
 echo '</select></p></td></tr>
 <tr><td><p>Rent: </td><td><input type="text" required name="rent" id="rent" size="15" maxlength="15" value="'.$rent.'" class="textbox"/></p></td></tr>
@@ -122,6 +137,7 @@ if (isset($_POST['submitted'])) {
 	$other_bill= str_replace(',','',$_POST["other_bill"]);
 	$issue_date= $_POST["issue_date"];
 }
+
 
 if(!isset($_POST['submitted'])){
     printFormSubmit();
@@ -147,10 +163,10 @@ if (isset($_POST['submitted'])) {
     if (empty($errors)) { 
 	$month = date('F-Y',strtotime($issue_date));
 	$total_rent = $rent + $water_bill + $electric_bill + $gas_bill + $security_bill + $utility_bill + $other_bill;
-        $query = "INSERT INTO billing(tenant_id,month,rent,water_bill,electric_bill,gas_bill,security_bill,utility_bill,other_bill,issue_date,total_rent,added_date)
-      VALUES ('$tenant_id','$month','$rent','$water_bill','$electric_bill','$gas_bill','$security_bill','$utility_bill','$other_bill','$issue_date','$total_rent',NOW());";
+        $query = "UPDATE billing SET tenant_id = '$tenant_id',month = '$month',rent = '$rent',water_bill = '$water_bill',electric_bill = '$electric_bill',gas_bill = '$gas_bill',security_bill = '$security_bill',utility_bill = '$utility_bill',other_bill = '$other_bill',issue_date = '$issue_date',total_rent = '$total_rent'
+        WHERE owner_utility_id = '".$_REQUEST['id']."'";
         addTable($dbc,$query);
-		echo '<div class="success"><p class="success">Bill successfully added!</p></div>';
+		echo '<div class="success"><p class="success">Bill successfully updated!</p></div>';
     }else {  
         echo '<div class="error"><p class="error">The following error(s) occurred:<br/><ul>';
 		foreach ($errors as $msg) { 
