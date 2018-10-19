@@ -111,7 +111,12 @@ ini_set('display_errors','1');
 <ul><a href="buildingdetails.php" class="button">VIEW BUILDINGS</a> </ul><BR>
 	<BR></td>
 <td><ul><a href="billdetails.php" class="button">VIEW BILLINGS</a> </ul><BR>
-	<BR></td>
+	<BR></td><td>
+			<ul><a href="profile.php" class="button"> PROFILE</a>  </ul>
+	 <BR>
+					<BR>
+
+</td>
 </tr>
 </table>
 <HR>

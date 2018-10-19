@@ -6,15 +6,24 @@ if(!isset($_SESSION["tenant"])){
 	exit();
 	}
 $tenantID=preg_replace('#[^0-9]#i','',$_SESSION["id"]);
-$tenant=preg_replace('#[^A-Za-z0-9]#i','',$_SESSION["tenant"]); 
+$tenant=$_SESSION["tenant"]; 
 $password=preg_replace('#[^A-Za-z0-9]#i','',$_SESSION["password"]);
 include"../sscripts/connect_to_mysql.php";
-$sql=mysql_query("SELECT * FROM tenant_login WHERE  id='$tenantID' AND username='$tenant' AND password='$password' LIMIT 1");
+$sql=mysql_query("SELECT * FROM tenant WHERE id='$tenantID' LIMIT 1");
 $existCount=mysql_num_rows($sql);
 if($existCount == 0){
 	echo "Your login session data is not on record in the database";
 	exit();
 		}
+	
+$tenant = mysql_query("SELECT * FROM tenant where id='".$_SESSION['id']."'");
+$row = mysql_fetch_array($tenant);
+$h = mysql_query("SELECT * FROM houses where id='".$row['house_id']."'");
+$house = mysql_fetch_array($h);
+$f = mysql_query("SELECT * FROM floors where fid='".$house['floor_id']."'");
+$floor = mysql_fetch_array($f);
+$b = mysql_query("SELECT * FROM building_info where bldid='".$row['building_id']."'");
+$building = mysql_fetch_array($b);
 ?>
 <?php 
 
@@ -43,25 +52,30 @@ ini_set('display_errors','1');
    <div id="dinv"><br/>
     <div>
       <h2 align="center" style="color:#0C3; text-transform:uppercase;">tenant dashboard</h2>
+	  <h4 align="center" style="color:#0C3; text-transform:uppercase;">Building:<?php echo $building['name'] ?></h4>
+	  <h4 align="center" style="color:#0C3; text-transform:uppercase;">Floor:<?php echo $floor['floor_no'] ?></h4>
+	  <h4 align="center" style="color:#0C3; text-transform:uppercase;">House No:<?php echo $house['unit_no'] ?></h4>
      <HR>
           
-
-<ul><a href="agentregistrationform.php" class="button">VIEW BILLS</a> </ul>
+<table border="0"width="70%"align="center"><tr><td>
+<ul><a href="viewbill.php" class="button">VIEW BILLS</a> </ul>
 					<BR>
-					<BR>
-				
-	<ul><a href="agentdetails.php" class="button"> BILLS HISTORY</a>  </ul>
-	<BR>
-	<BR>
-	<ul><a href="landlorddetails.php" class="button"> POST COMPLAINT</a></ul>
+					<BR></td><td>
+	<ul><a href="add_complaint.php" class="button"> POST COMPLAINT</a></ul>
 	
 	 <BR>
 	 <BR>
-			<ul><a href="deleteagents.html" class="button"> POST AD'S</a>  </ul>
+	 </td><td>
+			<ul><a href="complaintdetails.php" class="button"> VIEW COMPLAINTS</a>  </ul>
 	 <BR>
 					<BR>
 
+</td><td>
+			<ul><a href="profile.php" class="button"> PROFILE</a>  </ul>
+	 <BR>
+					<BR>
 
+</td></tr></table>
  
  </div>
  <BR>

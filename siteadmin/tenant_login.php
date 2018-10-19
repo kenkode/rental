@@ -1,17 +1,17 @@
 <?php 
 session_start();
 if(isset($_SESSION["tenant"])){
-	header("location:index1.php");
+	header("location:tenant_dashboard.php");
 	exit();
 	}
 	?>
 <?php
 if(isset($_POST["username"])&&isset($_POST["password"])){
 		
-		$tenant=preg_replace('#[^A-Za-z0-9]#i','',$_POST["username"]);
+		$tenant=$_POST["username"];
 		$password=preg_replace('#[^A-Za-z0-9]#i','',$_POST["password"]);
 include "../sscripts/connect_to_mysql.php";
-$sql=mysql_query("SELECT id FROM tenant_login WHERE username='$tenant' AND password='$password' ");
+$sql=mysql_query("SELECT id FROM tenant WHERE (r_email='$tenant' OR r_contact='$tenant') AND r_password='$password'");
 $existCount=mysql_num_rows($sql);
 if($existCount == 1){
 	while($row=mysql_fetch_array($sql)){
@@ -20,18 +20,18 @@ if($existCount == 1){
 		$_SESSION["id"]=$id;
 	    $_SESSION["tenant"]=$tenant;
 		$_SESSION["password"]=$password;
-		header("location:index1.php");
+		header("location:tenant_dashboard.php");
 		exit();
 }
 else{
-	echo"That information is incorrect,try again!<a href='index.php'> Click Here.</a>";
+	echo"That information is incorrect,try again!<a href='tenant_login.php'> Click Here.</a>";
 	exit();
 }
 	}
 ?>
 <html>
 <head>
-<title>Admin Log In</title>
+<title>Tenant Log In</title>
 <link href="../css/bootstrap.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -47,7 +47,7 @@ else{
     
        <h2>Please Log In </h2>
        <form id="form1"name="form1"method="post"action="tenant_login.php">
-          User Name:<br/>
+          Email/ Phone No:<br/>
            <input name="username"type="text"id="username"size="20"/>
            <br/><br/>
            Password:<br/>
