@@ -2,7 +2,7 @@
 <?php
 	include ('connect_to_mysql.php');
 	include ('common_functions.php');
-
+	
 session_start();
 if(!isset($_SESSION["employee"])){
 	header("location:employee_login.php");
@@ -18,7 +18,7 @@ if($existCount == 0){
 	echo "Your login session data is not on record in the database";
 	exit();
 		}
-	$query = "UPDATE tenant SET status = 'ACTIVE' WHERE id = '".$_REQUEST['id']."'";
+	$query = "UPDATE landlord SET status = 'ACTIVE' WHERE ownid = '".$_REQUEST['id']."'";
 	addTable($dbc,$query);
-	header('Location:viewtenant.php');
+	header('Location:viewlandlord.php');
 ?>

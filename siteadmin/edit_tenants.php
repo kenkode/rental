@@ -36,7 +36,7 @@ ini_set('display_errors','1');
 <link rel="stylesheet" href="../css/bootstrap.css" type="text/css" media="screen"/>
 <link rel="stylesheet" href="../style/datapicker/css/bootstrap-datepicker.css" type="text/css" media="screen"/>
 <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
- <title>Register Tenant</title>
+ <title>Edit Tenant</title>
  <script src="../style/jquery-2.1.1.js"></script>
  <script src="../style/bootstrap.js"></script>
 <script src="../style/datepicker/js/bootstrap-datepicker.js"></script>
@@ -102,7 +102,7 @@ echo ' <table border="0">
 <tr><td><p>Address: </td><td><input type="text" required name="r_address" size="50" maxlength="50" value="'.$row['r_address'].'" class="textbox"/></p></td></tr>
 <tr><td><p>National ID: </td><td><input type="text" required name="r_nid" size="50" maxlength="50" value="'.$row['r_nid'].'" class="textbox"/></p></td></tr>
 <tr><td><p>Building</p></td><td><p>
-<select name="building_id" required>';
+<select name="building_id" id="building_id" required>';
 $result = mysql_query("SELECT * FROM building_info WHERE status = 'ACTIVE'");
 while($r = mysql_fetch_array($result))
 {
@@ -118,7 +118,7 @@ echo '</select></p></td></tr>
 <select name="house_id" id="house_id" required>';
 $b = mysql_query("SELECT * FROM building_info WHERE status = 'ACTIVE' AND bldid='".$row['building_id']."'");
 $building = mysql_fetch_array($b);
-$result = mysql_query("SELECT * FROM houses WHERE status = 'ACTIVE' AND building_id='".$building['bldid']."'");
+$result = mysql_query("SELECT * FROM houses WHERE status = 'VACANT' AND building_id='".$building['bldid']."'");
 while($h = mysql_fetch_array($result))
 {
 if ($h['id']==$row["house_id"]) {
@@ -179,3 +179,33 @@ if (isset($_POST['submitted'])) {
 echo '</div>
 <hr><ul><a href="admin_dashboard.php" class="button">BACK</a>  </ul><hr>';
 ?>
+
+<script>
+$(document).ready(function(){
+
+    $("#building_id").change(function(){
+        var building_id = $(this).val();
+
+        $.ajax({
+            url: 'get_houses.php',
+            type: 'post',
+            data: {building_id:building_id},
+            dataType: 'json',
+            success:function(response){
+
+                var len = response.length;
+
+                $("#house_id").empty();
+                for( var i = 0; i<len; i++){
+                    var id = response[i]['id'];
+                    var unit_no = response[i]['unit_no'];
+                    
+                    $("#house_id").append("<option value='"+id+"'>"+unit_no+"</option>");
+
+                }
+            }
+        });
+    });
+
+});
+</script>

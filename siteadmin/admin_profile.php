@@ -20,6 +20,9 @@ if($existCount == 0){
 	echo "Your login session data is not on record in the database";
 	exit();
 		}
+		
+$result = mysql_query("SELECT * FROM admin where id='".$_SESSION['id']."'");
+$row = mysql_fetch_array($result);
 ?>
 
 <?php 
@@ -30,58 +33,54 @@ ini_set('display_errors','1');
 <html>
 <head>
 <link rel="stylesheet" href="../style/style.css" type="text/css" media="screen"/>
-<link href="../css/bootstrap.css" rel="stylesheet" type="text/css">
- <title>Add House</title>
-<link rel="stylesheet" href="../style/style.css" type="text/css" media="screen"/>
+<link rel="stylesheet" href="../css/bootstrap.css" type="text/css" media="screen"/>
+<link rel="stylesheet" href="../style/datapicker/css/bootstrap-datepicker.css" type="text/css" media="screen"/>
+<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+ <title>Update Profile</title>
+ <script src="../style/jquery-2.1.1.js"></script>
+ <script src="../style/bootstrap.js"></script>
+<script src="../style/datepicker/js/bootstrap-datepicker.js"></script>
+<script type="text/javascript">
+
+$(function(){
+$('#datepicker').datepicker({
+    format: 'yyyy-mm-dd',
+    autoclose: true,
+    orientation: "bottom"
+});
+});
+
+</script>
 </head>
  <body>
-  <div style="padding-top:5%;"></div>
 <div class="container">
  <nav class="nav navbar-inverse navbar-fixed-top">
  
 <?php include_once("headerad.php");?>
 </nav>
-  
-   <div id="dinv"><br/>
+  <div id="dinv"><br/>
      <div align="left" style="margin-left:24px;">
 <?php 
 // Create the form.
 
-echo '<form action="add_house.php" method="post">';
+echo '<form method="post">';
 $id = "";
-$floor_id = "";
-$unit_no = "";
-$building_id= "";
+$username = "";
+$password= "";
 
 //Populate Value from Form Submit - Stickeness
 if (isset($_POST['submitted'])) { 
-    $floor_id= $_POST["floor_id"];
-    $unit_no= $_POST["unit_no"];
-	$building_id= $_POST["building_id"];
-
+    $username= $_POST["username"];
+	$password= $_POST["password"];
 }
 
 echo '<div class="container">';
-echo '<h2>Add House Details</h2>' ;   
+echo '<h2>Update Profile</h2>' ;   
 
 echo ' <table border="0"> 
-<tr><td><p>Floor No.</p></td><td><p>
-<select name="floor_id" required>';
-$result = mysql_query("SELECT * FROM floors");
-while($row = mysql_fetch_array($result))
-{
-echo '<option value="'.$row['fid'].'">'.$row['floor_no'].'</option>';
-}
-echo '</select></p></td></tr>
-<tr><td><p>House No: </td><td><input type="text" required name="unit_no" size="50" maxlength="50" value="'.$unit_no.'" class="textbox"/></p></td></tr>
-<tr><td><p>Building</p></td><td><p>
-<select name="building_id" required>';
-$result = mysql_query("SELECT * FROM building_info");
-while($row = mysql_fetch_array($result))
-{
-echo '<option value="'.$row['bldid'].'">'.$row['name'].'</option>';
-}
-echo '</select></p></td></tr></table>';
+<tr><td><p>Username: </td><td><input type="text" required name="username" size="50" maxlength="50" value="'.$row['username'].'" class="textbox"/></p></td></tr>
+<tr><td><p>Password: </td><td><input type="text" required name="password" size="15" maxlength="15" value="'.$row['password'].'" class="textbox"/></p></td></tr>
+</table>';
 
 if(!isset($_POST['submitted'])){
     printFormSubmit();
@@ -89,10 +88,10 @@ if(!isset($_POST['submitted'])){
 
 //Validate and Submit to the Database
 if (isset($_POST['submitted'])) {
+    
     $errors = array(); 
-    checkIfEmpty($_POST['floor_id'],"Please enter full name.",$errors);
-    checkIfEmpty($_POST['unit_no'],"Please enter  email.",$errors);
-	checkIfEmpty($_POST['building_id'],"Please enter Buildings ID.",$errors);
+    checkIfEmpty($_POST['username'],"Please enter username.",$errors);
+	checkIfEmpty($_POST['password'],"Please enter password.",$errors);
 
     if (!empty($errors)) { 
          printFormSubmit();
@@ -102,10 +101,11 @@ if (isset($_POST['submitted'])) {
     
     echo '<div class="Message_bar">';
     if (empty($errors)) { 
-        $query = "INSERT INTO houses(floor_id,unit_no,status,building_id)
-      VALUES ('$floor_id','$unit_no','VACANT','$building_id');";
+        $query = "UPDATE admin SET username = '$username',password = '$password' WHERE id = '".$_SESSION['id']."'";
         addTable($dbc,$query);
-		echo '<div class="success"><p class="success">House successfully added!</p></div>';
+		$_SESSION["manager"]=$_POST['username'];
+		$_SESSION["password"]=$_POST['password'];
+		echo '<div class="success"><p class="success">Profile successfully updated!</p></div>';
     }else {  
         echo '<div class="error"><p class="error">The following error(s) occurred:<br/><ul>';
 		foreach ($errors as $msg) { 

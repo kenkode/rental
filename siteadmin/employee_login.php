@@ -8,19 +8,19 @@ if(isset($_SESSION["employee"])){
 <?php
 if(isset($_POST["username"])&&isset($_POST["password"])){
 		
-		$employee=preg_replace('#[^A-Za-z0-9]#i','',$_POST["username"]);
+		$employee=$_POST["username"];
 		$password=preg_replace('#[^A-Za-z0-9]#i','',$_POST["password"]);
 include "../sscripts/connect_to_mysql.php";
-$sql=mysql_query("SELECT id FROM employee_login WHERE username='$employee' AND password='$password' ");
+$sql=mysql_query("SELECT eid FROM employee WHERE (e_email='$employee' OR e_contact='$employee') AND e_password='$password'");
 $existCount=mysql_num_rows($sql);
 if($existCount == 1){
 	while($row=mysql_fetch_array($sql)){
-		$id = $row["id"];
+		$id = $row["eid"];
 		}
 		$_SESSION["id"]=$id;
 	    $_SESSION["employee"]=$employee;
 		$_SESSION["password"]=$password;
-		header("location:index 3.php");
+		header("location:employee_dashboard.php");
 		exit();
 }
 else{

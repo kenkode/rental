@@ -71,7 +71,7 @@ ini_set('display_errors','1');
 					<BR>
 
 </td><td>
-			<ul><a href="profile.php" class="button"> PROFILE</a>  </ul>
+			<ul><a href="tenant_profile.php" class="button"> PROFILE</a>  </ul>
 	 <BR>
 					<BR>
 

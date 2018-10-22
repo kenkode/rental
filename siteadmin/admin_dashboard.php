@@ -112,7 +112,7 @@ ini_set('display_errors','1');
 	<BR></td>
 <td><ul><a href="billdetails.php" class="button">VIEW BILLINGS</a> </ul><BR>
 	<BR></td><td>
-			<ul><a href="profile.php" class="button"> PROFILE</a>  </ul>
+			<ul><a href="admin_profile.php" class="button"> PROFILE</a>  </ul>
 	 <BR>
 					<BR>
 

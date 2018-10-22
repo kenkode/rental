@@ -9,12 +9,17 @@ $landlordID=preg_replace('#[^0-9]#i','',$_SESSION["id"]);
 $landlord=preg_replace('#[^A-Za-z0-9]#i','',$_SESSION["landlord"]); 
 $password=preg_replace('#[^A-Za-z0-9]#i','',$_SESSION["password"]);
 include"../sscripts/connect_to_mysql.php";
-$sql=mysql_query("SELECT * FROM landlord_login WHERE  id='$landlordID' AND username='$landlord' AND password='$password' LIMIT 1");
+$sql=mysql_query("SELECT * FROM landlord WHERE ownid='$landlordID' LIMIT 1");
 $existCount=mysql_num_rows($sql);
 if($existCount == 0){
 	echo "Your login session data is not on record in the database";
 	exit();
 		}
+		
+$tenant = mysql_query("SELECT * FROM landlord WHERE ownid='$landlordID'");
+$row = mysql_fetch_array($tenant);
+$b = mysql_query("SELECT * FROM building_info where bldid='".$row['building_id']."'");
+$building = mysql_fetch_array($b);
 ?>
 <?php 
 
@@ -44,24 +49,31 @@ ini_set('display_errors','1');
    
 <div>
       <h2 align="center" style="color:#0C3; text-transform:uppercase;">landlord dashboard</h2>
+	  <h4 align="center" style="color:#0C3; text-transform:uppercase;">Building:<?php echo $building['name'] ?></h4>
      <HR>
           
-
+<table border="0"width="70%"align="center"><tr><td>
 <ul><a href="agentregistrationform.php" class="button">VIEW PAYMENTS</a> </ul>
 					<BR>
 					<BR>
-				
-	<ul><a href="agentdetails.php" class="button"> VIEW OCCUPIED HOUSES</a>  </ul>
+			</td><td>	
+	<ul><a href="occupiedhouses.php" class="button"> VIEW OCCUPIED HOUSES</a>  </ul>
 	<BR>
 	<BR>
-	<ul><a href="landlorddetails.php" class="button"> VIEW VACANT HOUSES</a></ul>
+	</td><td>
+	<ul><a href="vacanthouses.php" class="button"> VIEW VACANT HOUSES</a></ul>
 	
 	 <BR>
 	 <BR>
-			<ul><a href="deleteagents.html" class="button"> VIEW COMPLAINTS</a>  </ul>
+	 </td><td>
+			<ul><a href="viewcomplaints.php" class="button"> VIEW COMPLAINTS</a>  </ul>
 	 <BR>
 					<BR>
-
+</td><td>
+			<ul><a href="landlord_profile.php" class="button"> PROFILE</a>  </ul>
+	 <BR>
+					<BR>
+</td></tr></table>
 
  
  </div>

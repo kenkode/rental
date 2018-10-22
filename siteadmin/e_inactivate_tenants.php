@@ -18,7 +18,7 @@ if($existCount == 0){
 	echo "Your login session data is not on record in the database";
 	exit();
 		}
-	$query = "UPDATE tenant SET status = 'ACTIVE' WHERE id = '".$_REQUEST['id']."'";
+	$query = "UPDATE tenant SET status = 'INACTIVE' WHERE id = '".$_REQUEST['id']."'";
 	addTable($dbc,$query);
 	header('Location:viewtenant.php');
 ?>

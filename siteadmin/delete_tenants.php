@@ -20,6 +20,10 @@
 	echo "Your login session data is not on record in the database";
 	exit();
 	}
+	$tenant = mysql_query("SELECT * FROM tenant where id='".$_REQUEST['id']."'");
+    $row = mysql_fetch_array($tenant);
+	$query = "Update houses SET status = 'VACANT' WHERE id = '".$row['house_id']."'";
+	@mysqli_query ($dbc, $query);
 	$query = "Delete from tenant WHERE id = '".$_REQUEST['id']."'";
 	addTable($dbc,$query);
 	header('Location:tenantdetails.php');

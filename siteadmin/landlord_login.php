@@ -1,26 +1,26 @@
 <?php 
 session_start();
 if(isset($_SESSION["landlord"])){
-	header("location:index 2.php");
+	header("location:landlord_dashboard.php");
 	exit();
 	}
 	?>
 <?php
 if(isset($_POST["username"])&&isset($_POST["password"])){
 		
-		$landlord=preg_replace('#[^A-Za-z0-9]#i','',$_POST["username"]);
+		$landlord=$_POST["username"];
 		$password=preg_replace('#[^A-Za-z0-9]#i','',$_POST["password"]);
 include "../sscripts/connect_to_mysql.php";
-$sql=mysql_query("SELECT id FROM landlord_login WHERE username='$landlord' AND password='$password' ");
+$sql=mysql_query("SELECT ownid FROM landlord WHERE (o_email='$landlord' OR o_contact='$landlord') AND o_password='$password'");
 $existCount=mysql_num_rows($sql);
 if($existCount == 1){
 	while($row=mysql_fetch_array($sql)){
-		$id = $row["id"];
+		$id = $row["ownid"];
 		}
 		$_SESSION["id"]=$id;
 	    $_SESSION["landlord"]=$landlord;
 		$_SESSION["password"]=$password;
-		header("location:index 2.php");
+		header("location:landlord_dashboard.php");
 		exit();
 }
 else{
