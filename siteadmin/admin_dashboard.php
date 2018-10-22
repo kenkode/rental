@@ -100,8 +100,9 @@ ini_set('display_errors','1');
 <ul><a href="add_bills.php" class="button">ADD BILLS</a> </ul><BR>
 	<BR></td>
 <td>
-<ul><a href="salaries.php" class="button">VIEW SALARIES</a> </ul><BR>
+<ul><a href="add_salary.php" class="button">ADD Salary</a> </ul><BR>
 	<BR></td>
+
 </tr>
 <tr>
 <td>
@@ -111,7 +112,13 @@ ini_set('display_errors','1');
 <ul><a href="buildingdetails.php" class="button">VIEW BUILDINGS</a> </ul><BR>
 	<BR></td>
 <td><ul><a href="billdetails.php" class="button">VIEW BILLINGS</a> </ul><BR>
-	<BR></td><td>
+	<BR></td>
+	<td>
+<ul><a href="salarydetails.php" class="button">VIEW SALARIES</a> </ul><BR>
+	<BR></td>
+	</tr>
+	<tr>
+	<td>
 			<ul><a href="admin_profile.php" class="button"> PROFILE</a>  </ul>
 	 <BR>
 					<BR>

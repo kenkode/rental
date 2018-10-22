@@ -103,7 +103,7 @@ echo ' <table border="0">
 <tr><td><p>National ID: </td><td><input type="text" required name="r_nid" size="50" maxlength="50" value="'.$row['r_nid'].'" class="textbox"/></p></td></tr>
 <tr><td><p>Building</p></td><td><p>
 <select name="building_id" id="building_id" required>';
-$result = mysql_query("SELECT * FROM building_info WHERE status = 'ACTIVE'");
+$result = mysql_query("SELECT * FROM building_info WHERE status = 'ACTIVE' AND bldid='".$row['building_id']."'");
 while($r = mysql_fetch_array($result))
 {
 if ($r['bldid']==$row["building_id"]) {

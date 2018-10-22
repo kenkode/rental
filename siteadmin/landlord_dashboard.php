@@ -53,7 +53,7 @@ ini_set('display_errors','1');
      <HR>
           
 <table border="0"width="70%"align="center"><tr><td>
-<ul><a href="agentregistrationform.php" class="button">VIEW PAYMENTS</a> </ul>
+<ul><a href="viewrent.php" class="button">VIEW PAYMENTS</a> </ul>
 					<BR>
 					<BR>
 			</td><td>	

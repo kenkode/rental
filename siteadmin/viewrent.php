@@ -2,23 +2,24 @@
 include ('connect_to_mysql.php');
 include ('common_functions.php');
 
-
-
 session_start();
-if(!isset($_SESSION["manager"])){
-	header("location:admin_login.php");
+if(!isset($_SESSION["landlord"])){
+	header("location:landlord_login.php");
 	exit();
 	}
-$managerID=preg_replace('#[^0-9]#i','',$_SESSION["id"]);
-$manager=preg_replace('#[^A-Za-z0-9]#i','',$_SESSION["manager"]); 
+$landlordID=preg_replace('#[^0-9]#i','',$_SESSION["id"]);
+$landlord=preg_replace('#[^A-Za-z0-9]#i','',$_SESSION["landlord"]); 
 $password=preg_replace('#[^A-Za-z0-9]#i','',$_SESSION["password"]);
 include"../sscripts/connect_to_mysql.php";
-$sql=mysql_query("SELECT * FROM admin WHERE  id='$managerID' AND username='$manager' AND password='$password' LIMIT 1");
+$sql=mysql_query("SELECT * FROM landlord WHERE ownid='$landlordID' LIMIT 1");
 $existCount=mysql_num_rows($sql);
 if($existCount == 0){
 	echo "Your login session data is not on record in the database";
 	exit();
 		}
+		
+$l = mysql_query("SELECT * FROM landlord WHERE ownid='$landlordID'");
+$landlord = mysql_fetch_array($l);
 ?>
 
 <?php 
@@ -48,7 +49,7 @@ ini_set('display_errors','1');
 <div class="container">
 <nav class="nav navbar-inverse navbar-fixed-top">
  
-<?php include_once("headerad.php");?>
+<?php include_once("headerad2.php");?>
 </nav><br><br><br>
    <h2 align="center" style="color:#0C3; text-transform:uppercase;">bill details</h2>
      <HR>
@@ -58,7 +59,7 @@ ini_set('display_errors','1');
    <div><br/>
      <div align="center" style="margin-center:1px;">
 <?php
-$result = mysql_query("SELECT * FROM billing");
+$result = mysql_query("SELECT * FROM billing left join tenant on billing.tenant_id = tenant.id WHERE building_id = '".$landlord['building_id']."'");
 $i=0;
 
 $rent = 0;
@@ -75,7 +76,7 @@ echo "<table id='users' border='5' style='background-color:#B2FF99'>
 <tr>
 <th>ID</th>
 <th>TENANT</th>
-<th>BUILDING</th>
+<th>HOUSE NO.</th>
 <th>MONTH</th>
 <th>RENT</th>
 <th>WATER BILL</th>
@@ -86,13 +87,13 @@ echo "<table id='users' border='5' style='background-color:#B2FF99'>
 <th>OTHER BILLS</th>
 <th>TOTAL</th>
 <th>DATE PAID</th>
-<th>ACTION</th>
 </tr></thead><tbody>";
 while($row = mysql_fetch_array($result))
 {
 	$i++;
-$t = mysql_query("SELECT * FROM tenant where id='".$row['tenant_id']."'");
-$tenant = mysql_fetch_array($t);
+
+$h = mysql_query("SELECT * FROM houses where id='".$row['house_id']."'");
+$house = mysql_fetch_array($h);
 
 $rent = $rent + $row['rent'];
 $water_bill = $water_bill + $row['water_bill'];
@@ -103,13 +104,10 @@ $utility_bill = $utility_bill + $row['utility_bill'];
 $other_bill = $other_bill + $row['other_bill'];
 $total_rent = $total_rent + $row['total_rent'];
 
-$b = mysql_query("SELECT * FROM building_info where bldid='".$tenant['building_id']."'");
-$building = mysql_fetch_array($b);
-
 echo "<tr style='width:400px;height:80px'>";
 echo "<td>" . $i . "</td>";
-echo "<td>" . $tenant['r_name'] . "</td>";
-echo "<td>" . $building['name'] . "</td>";
+echo "<td>" . $row['r_name'] . "</td>";
+echo "<td>" . $house['unit_no'] . "</td>";
 echo "<td>" . $row['month'] . "</td>";
 echo "<td>" . number_format($row['rent'],2) . "</td>";
 echo "<td>" . number_format($row['water_bill'],2) . "</td>";
@@ -120,8 +118,6 @@ echo "<td>" . number_format($row['utility_bill'],2) . "</td>";
 echo "<td>" . number_format($row['other_bill'],2) . "</td>";
 echo "<td>" . number_format($row['total_rent'],2) . "</td>";
 echo "<td>" . $row['issue_date'] . "</td>";
-echo "<td><a class='btn btn-info' href='edit_bills.php?id=".$row['owner_utility_id']."'>Edit</a><br>";
-echo "<a class='btn btn-info' href='delete_bills.php?id=".$row['owner_utility_id']."'>Delete</a></td>";
 echo "</tr>";
 }
 echo "</tbody>
@@ -143,5 +139,5 @@ echo "</tbody>
 mysql_close($con);
 ?>
 </div>
-<hr><ul><a href="admin_dashboard.php" class="button">BACK</a>  </ul><hr>
+<hr><ul><a href="landlord_dashboard.php" class="button">BACK</a>  </ul><hr>
 </html>

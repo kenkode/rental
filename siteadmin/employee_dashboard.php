@@ -74,7 +74,7 @@ ini_set('display_errors','1');
 <ul><a href="eviewcomplaints.php" class="button">VIEW COMPLAINTS</a> </ul><BR>
 	<BR></td>
 <td>
-<ul><a href="agentregistrationform.php" class="button">VIEW PAYSLIP</a> </ul><BR>
+<ul><a href="payslip.php" class="button">VIEW PAYSLIP</a> </ul><BR>
 	<BR></td>
 </tr>
 <tr><td>
